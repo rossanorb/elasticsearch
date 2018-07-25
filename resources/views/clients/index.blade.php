@@ -4,7 +4,7 @@
     <div class="container">
         <h3>Clientes</h3>
 
-
+        <a href="{{ route('clients.create') }}" class="btn btn-success">Novo cliente</a>
         <br><br>
 
         <table class="table table-bordered">
