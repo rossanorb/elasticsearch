@@ -21,3 +21,6 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 
 Route::resource('clients','ClientsController');
+
+Route::get('clients/{clients}/destroy', 'ClientsController@destroy')
+    ->name('clients.delete');

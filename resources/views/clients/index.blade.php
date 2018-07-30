@@ -18,8 +18,23 @@
             </thead>
 
             <tbody>
-
+            @foreach($clients['hits']['hits'] as $client)
+                <tr>
+                    <td>{{$client['_id']}}</td>
+                    <td>{{$client['_source']['name']}}</td>
+                    <td>{{$client['_source']['cpf']}}</td>
+                    <td>
+                        <a href="{{route('clients.edit',['id'=> $client['_id']])}}" class="btn btn-default btn-sm">
+                            Editar
+                        </a>
+                        <a href="{{route('clients.delete',['id'=> $client['_id']])}}" class="btn btn-default btn-sm">
+                            Excluir
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
             </tbody>
+            
         </table>
     </div>
 

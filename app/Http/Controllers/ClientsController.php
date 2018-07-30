@@ -2,12 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use Elasticsearch\Client;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
 class ClientsController extends Controller
 {
+    protected $elasticParams = [];
+    private $client;
+
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+        $this->elasticParams['index'] = env('ES_INDEX');
+        $this->elasticParams['type'] = 'clients';
+        //$this->elasticParams['client'] = ['ignore' => [400, 404]];
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +27,8 @@ class ClientsController extends Controller
      */
     public function index(Request $request)
     {
-        return view('clients.index');
+        $clients = $this->client->search($this->elasticParams);
+        return view('clients.index', compact('clients'));
     }
 
     /**
