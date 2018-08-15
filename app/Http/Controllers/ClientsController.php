@@ -41,6 +41,19 @@ class ClientsController extends Controller
         return view('clients.create');
     }
 
+    public function store(Request $request)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $this->elasticParams['id']  =  microtime(date('Y-m-d H:i:s')); // gambiarra para gerar id
+
+        $data = $request->all();
+        unset($data['_token']);
+        $this->elasticParams['body'] = $data;
+        $this->elasticParams['refresh'] = true;
+        $this->client->create($this->elasticParams);
+        return redirect()->route('clients.index');
+    }    
+
     /**
      * Show the form for editing the specified resource.
      *
