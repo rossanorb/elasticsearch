@@ -52,7 +52,7 @@ class ClientsController extends Controller
         $this->elasticParams['refresh'] = true;
         $this->client->create($this->elasticParams);
         return redirect()->route('clients.index');
-    }    
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -60,19 +60,39 @@ class ClientsController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        return view('clients.edit');
-    }
+     public function edit($id)
+     {
+         try {
+             $this->elasticParams['id'] = $id;
+             $client = $this->client->get($this->elasticParams);
+         } catch (Missing404Exception $e) {
+             throw new NotFoundHttpException("Client not found");
+         }
+         return view('clients.edit', compact('client'));
+     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id){}
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @param  int $id
+    * @return \Illuminate\Http\Response
+    */
+    public function update(Request $request, $id)
+    {
+         $this->elasticParams['id'] = $id;
+         if (!$this->client->exists($this->elasticParams)) {
+             throw new NotFoundHttpException("Client not found");
+         }
+
+         $data = $request->all();
+         unset($data['_token']);
+         unset($data['_method']);
+         $this->elasticParams['refresh'] = true;
+         $this->elasticParams['body']['doc'] = $data;
+         $this->client->update($this->elasticParams);
+         return redirect()->route('clients.index');
+    }
 
     /**
      * Remove the specified resource from storage.
